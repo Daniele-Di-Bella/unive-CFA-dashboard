@@ -1,0 +1,11 @@
+# Telemetry logs generated at runtime
+logs/
+
+# Python virtual environments and cache
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Temporary Excel lock files (when config.xlsx is open)
+~$*.xlsx
