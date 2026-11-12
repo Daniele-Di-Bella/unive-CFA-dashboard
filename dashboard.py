@@ -5,13 +5,13 @@ import datetime
 import threading
 from collections import deque
 import pandas as pd
-import flask
-from flask import request, jsonify
-import dash
-from dash import dcc, html, dash_table
-from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
-import plotly.graph_objs as go
+import flask # type: ignore
+from flask import request, jsonify # type: ignore
+import dash # type: ignore
+from dash import dcc, html, dash_table # type: ignore
+from dash.dependencies import Input, Output, State # type: ignore
+import dash_bootstrap_components as dbc # type: ignore
+import plotly.graph_objs as go # type: ignore
 
 # ==========================================
 # 1. CONFIGURATION & DATA STRUCTURES
