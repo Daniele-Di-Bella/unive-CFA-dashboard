@@ -17,7 +17,7 @@ import plotly.graph_objs as go # type: ignore
 # 1. CONFIGURATION & DATA STRUCTURES
 # ==========================================
 MAX_POINTS              = 300               # 5 minutes of data at 1Hz
-VIEW_WINDOW_SEC         = 60                # Fixed visible seconds on x-axis for real-time scrolling
+VIEW_WINDOW_SEC         = 180               # Fixed visible seconds on x-axis for real-time scrolling
 CONFIG_FILE             = 'config.xlsx'     # Configuration file
 
 
