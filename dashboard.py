@@ -16,9 +16,10 @@ import plotly.graph_objs as go # type: ignore
 # ==========================================
 # 1. CONFIGURATION & DATA STRUCTURES
 # ==========================================
-MAX_POINTS = 300  # 5 minutes of data at 1Hz
-VIEW_WINDOW_SEC = 60  # Fixed visible seconds on x-axis for real-time scrolling
-CONFIG_FILE = 'config.xlsx'
+MAX_POINTS              = 300               # 5 minutes of data at 1Hz
+VIEW_WINDOW_SEC         = 180               # Fixed visible seconds on x-axis for real-time scrolling
+CONFIG_FILE             = 'config.xlsx'     # Configuration file
+
 
 class DataStore:
     def __init__(self):
@@ -93,7 +94,7 @@ def receive_telemetry():
         abk_vals = list(map(int, abk_match.group(1).split(';'))) if abk_match else [0]*32
         cnd_vals = list(map(float, cnd_match.group(1).split(';'))) if cnd_match else [0.0]*4
         flw_val = float(flw_match.group(1)) if flw_match else 0.0
-        drw_val = float(drw_match.group(1)) if drw_match else 0.0
+        drw_val = float(drw_match.group(1)) /10 if drw_match else 0.0
         pmp_rpm = float(pmp_match.group(1)) if pmp_match else 0.0
         pmp_state = int(pmp_match.group(2)) if pmp_match else 0
 
@@ -156,7 +157,7 @@ def dark_figure():
     fig = go.Figure()
     fig.update_layout(
         template="plotly_dark",
-        margin=dict(l=40, r=40, t=30, b=30),
+        margin=dict(l=40, r=40, t=22, b=20),# original dict(l=40, r=40, t=30, b=30),
         paper_bgcolor='#272B30',
         plot_bgcolor='#272B30',
         font=dict(color='#c8c8c8', size=10),
@@ -180,10 +181,10 @@ app.layout = dbc.Container([
         dbc.Col([
             # KPIs
             dbc.Row([
-                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Total Dust", className="text-muted text-uppercase", style={'fontSize': '0.7rem'}), html.Div(id='kpi-abk', className="fs-5 fw-bold text-white font-monospace")]), className="border-start border-primary border-4 rounded-0 mb-2")),
-                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Conductivity", className="text-muted text-uppercase", style={'fontSize': '0.7rem'}), html.Div(id='kpi-cnd', className="fs-5 fw-bold text-white font-monospace")]), className="border-start border-warning border-4 rounded-0 mb-2")),
-                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Main Flow", className="text-muted text-uppercase", style={'fontSize': '0.7rem'}), html.Div(id='kpi-flw', className="fs-5 fw-bold text-white font-monospace")]), className="border-start border-success border-4 rounded-0 mb-2")),
-                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Core Height", className="text-muted text-uppercase", style={'fontSize': '0.7rem'}), html.Div(id='kpi-drw', className="fs-5 fw-bold text-white font-monospace")]), className="border-start border-info border-4 rounded-0 mb-2")),
+                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Total Dust", className="text-muted text-uppercase", style={'fontSize': '0.70rem'}), html.Div(id='kpi-abk', className="fs-5 fw-bold text-white font-monospace")], className="py-1 px-2"), className="border-start border-primary border-4 rounded-0 mb-2")),
+                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Conductivity", className="text-muted text-uppercase", style={'fontSize': '0.70rem'}), html.Div(id='kpi-cnd', className="fs-5 fw-bold text-white font-monospace")], className="py-1 px-2"), className="border-start border-warning border-4 rounded-0 mb-2")),
+                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Main Flow", className="text-muted text-uppercase", style={'fontSize': '0.70rem'}), html.Div(id='kpi-flw', className="fs-5 fw-bold text-white font-monospace")], className="py-1 px-2"), className="border-start border-success border-4 rounded-0 mb-2")),
+                dbc.Col(dbc.Card(dbc.CardBody([html.Div("Core Height", className="text-muted text-uppercase", style={'fontSize': '0.70rem'}), html.Div(id='kpi-drw', className="fs-5 fw-bold text-white font-monospace")], className="py-1 px-2"), className="border-start border-info border-4 rounded-0 mb-2")),
             ]),
             
             # Event Logger
@@ -199,7 +200,7 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardHeader("Flow and Core Height"),
-                    dbc.CardBody(dcc.Graph(id='graph-flw-drw', config={'displayModeBar': False}, style={'height': '280px'}), className="p-1")
+                    dbc.CardBody(dcc.Graph(id='graph-flw-drw', config={'displayModeBar': False}, style={'height': '240px'}), className="p-1") # Original 280px
                 ], className="rounded-0 mb-2"), width=12)
             ]),
             
@@ -207,7 +208,7 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardHeader("Conductivity per Channel [mS]"),
-                    dbc.CardBody(dcc.Graph(id='graph-cnd', config={'displayModeBar': False}, style={'height': '280px'}), className="p-1")
+                    dbc.CardBody(dcc.Graph(id='graph-cnd', config={'displayModeBar': False}, style={'height': '240px'}), className="p-1") # Original 280px
                 ], className="rounded-0 mb-2"), width=12)
             ]),
 
@@ -215,7 +216,7 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardHeader(dbc.Row([dbc.Col("Total Dust Trend"), dbc.Col(dbc.Switch(id='toggle-ma', label="MA", value=True, className="float-end"), width="auto")])),
-                    dbc.CardBody(dcc.Graph(id='graph-abk-tot', config={'displayModeBar': False}, style={'height': '280px'}), className="p-1")
+                    dbc.CardBody(dcc.Graph(id='graph-abk-tot', config={'displayModeBar': False}, style={'height': '240px'}), className="p-1") # Original 280px
                 ], className="rounded-0 mb-2"), width=12)
             ]),
 
@@ -223,7 +224,7 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardHeader(dbc.Row([dbc.Col("Abakus Distribution (μm)"), dbc.Col(dbc.Button("Reset", id="btn-reset", size="sm", color="secondary", className="float-end rounded-0 py-0"), width="auto")])),
-                    dbc.CardBody(dcc.Graph(id='graph-abk-hist', config={'displayModeBar': False}, style={'height': '280px'}), className="p-1")
+                    dbc.CardBody(dcc.Graph(id='graph-abk-hist', config={'displayModeBar': False}, style={'height': '240px'}), className="p-1") # Original 280px
                 ], className="rounded-0 mb-2"), width=12)
             ]),
         ], lg=9),
@@ -236,9 +237,20 @@ app.layout = dbc.Container([
                     dash_table.DataTable(
                         id='metrics-table',
                         style_table={'overflowY': 'visible'},
-                        style_header={'backgroundColor': '#1c1e22', 'color': 'white', 'fontWeight': 'bold'},
-                        style_cell={'backgroundColor': '#272B30', 'color': '#c8c8c8', 'border': '1px solid #1c1e22', 'padding': '5px', 'fontSize': '12px'},
-                        style_data_conditional=[{'if': {'row_index': 0}, 'backgroundColor': '#1a2634', 'fontWeight': 'bold', 'color': '#0dcaf0'}]
+                        style_header={'backgroundColor': '#1c1e22', 'color': 'white', 'fontWeight': 'bold', 'fontSize': '14px'},
+                        style_cell={'backgroundColor': '#272B30', 'color': '#c8c8c8', 'border': '1px solid #1c1e22', 'padding': '6px', 'fontSize': '14px'}, # Orignal padding 5px, fontsize 12px
+                        css=[
+                            {'selector': '.dash-cell-value', 'rule': 'font-size: 18px !important;'},
+                            {'selector': '.dash-header', 'rule': 'font-size: 18px !important;'}
+                        ],
+                        style_data_conditional=[
+                            {'if': {'filter_query': '{Value} contains "ON"'}, 'backgroundColor': '#143622', 'fontWeight': 'bold', 'color': '#20c997'},
+                            {'if': {'filter_query': '{Value} contains "OFF"'}, 'backgroundColor': '#3b181c', 'fontWeight': 'bold', 'color': '#ff4d4d'},
+                            {'if': {'filter_query': '{Parameter} = "PUMP RPM"'}, 'backgroundColor': '#1a2634', 'fontWeight': 'bold', 'color': '#0dcaf0'}
+                        ]
+                        #style_data_conditional=[
+                            #{'if': {'row_index': 0}, 'backgroundColor': '#1a2634', 'fontWeight': 'bold', 'color': '#0dcaf0'} # ORIGINAL
+                        #    ]
                     )
                 ], className="p-0")
             ], className="rounded-0 h-100")
@@ -298,6 +310,7 @@ def update_dashboard(n, show_ma, relayout_tot, relayout_cnd, relayout_flw):
         flw = list(data_store.flw)
         drw = list(data_store.drw)
         rpm = data_store.pmp_rpm
+        state = data_store.pmp_state # Included to check whether the pump is running or not
         scales = data_store.scales
         offsets = data_store.offsets
         evts = list(data_store.events)
@@ -434,7 +447,11 @@ def update_dashboard(n, show_ma, relayout_tot, relayout_cnd, relayout_flw):
 
     # Table calculation
     cols = [{'name': 'Parameter', 'id': 'Parameter'}, {'name': 'Value', 'id': 'Value'}]
-    table_data = [{'Parameter': 'PUMP RPM', 'Value': f"{rpm:.3f}"}]
+    status_str = "ON" if state == 1 else "OFF" # Display pump status
+    table_data = [
+        {'Parameter': 'PUMP STATUS', 'Value': status_str},
+        {'Parameter': 'PUMP RPM', 'Value': f"{rpm:.3f}"}
+        ]
     for i in range(24):
         flow_val = (rpm * scales[i]) + offsets[i]
         table_data.append({'Parameter': f'Ch {i+1} Flow', 'Value': f"{flow_val:.4f}"})
